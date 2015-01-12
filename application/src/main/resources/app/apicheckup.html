@@ -1,0 +1,104 @@
+---
+layout: default
+title: API checkup
+---
+<h1>[[title]]</h1>
+
+<p>Cette page permet de visualiser la disponibilité des services exposés par l'API</p>
+
+<div id="statuses"></div>
+<div id="test"></div>
+
+<script type="text/jsx">
+    var routes = [
+        {name: "All", url: "/api/installations"},
+        {name: "Search", url: "/api/installations/search?query=Port+Carquefou"},
+        {name: "Geo search", url: "/api/installations/geosearch?lat=47.3&lng=-1.5&distance=1000"},
+        {name: "By id", url: "/api/installations/440030016"},
+        {name: "Random", url: "/api/installations/random"},
+        {name: "Stats", url: "/api/installations/stats"},
+        {name: "Suggest", url: "/api/towns/suggest/ca"},
+        {name: "Town Location", url: "/api/towns/location/nantes"}
+    ];
+
+    var Label = ReactBootstrap.Label;
+    var Glyphicon = ReactBootstrap.Glyphicon;
+
+    var RouteStatusLine = React.createClass({
+        getInitialState: function () {
+            return {};
+        },
+        componentDidMount: function () {
+            $.ajax({
+                url: this.props.url,
+                dataType: 'json',
+                success: function (data) {
+                    this.setState({status: "OK", style: "success"});
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    this.setState({status: "KO", style: "danger"});
+                }.bind(this)
+            });
+        },
+        render: function () {
+            if (!this.state.status) {
+                return (
+                        <tr>
+                            <td>
+                                <b>{this.props.name}</b>
+                            </td>
+                            <td>
+                                {this.props.url}
+                            </td>
+                            <td>
+                                <Glyphicon glyph="refresh" className="glyphicon-refresh-animate" />
+                            </td>
+                        </tr>
+                );
+            }
+            else {
+                return (
+                        <tr>
+                            <td>
+                                <b>{this.props.name}</b>
+                            </td>
+                            <td>
+                                {this.props.url}</td>
+                            <td>
+                                <Label bsStyle={this.state.style}>{this.state.status}</Label>
+                            </td>
+                        </tr>
+                );
+            }
+        }
+    });
+
+    var RouteStatusTable = React.createClass({
+        render: function () {
+            var routeStatusLines = this.props.routes.map(function (route) {
+                return (
+                        <RouteStatusLine name={route.name} url={route.url} />
+                );
+            });
+            return (
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Route</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {routeStatusLines}
+                        </tbody>
+                    </table>
+            );
+        }
+    });
+
+    React.render(
+            <RouteStatusTable routes={routes} />,
+            document.getElementById('statuses')
+    );
+</script>

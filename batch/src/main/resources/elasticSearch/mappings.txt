@@ -1,0 +1,62 @@
+curl -XPOST localhost:9200/installations -d '{
+    "settings": {
+    	"analysis": {
+			"filter": {
+				"french_elision": {
+					"type": "elision",
+					"articles": ["l","m","t","qu","n","s","j",
+					"d","c","jusqu","quoiqu","lorsqu","puisqu"]
+				},
+				"french_stop": {
+					"type": "stop",
+					"stopwords": "_french_"
+				},
+				"french_stemmer": {
+					"type": "stemmer",
+					"language": "light_french"
+				}
+			},
+			"analyzer": {
+				"default": {
+					"type": "custom",
+					"tokenizer": "standard",
+					"filter":
+                    ["french_elision",
+					"lowercase",
+					"asciifolding",
+					"french_stop",
+					"french_stemmer"]
+				}
+			}
+		}
+	},
+	"mappings": {
+		"installation": {
+			"properties": {
+				"location": {
+					"properties": {
+						"coordinates": {
+							"type": "geo_point"
+						}
+					}
+				}
+			}
+		}
+	}
+}'
+
+curl -XPOST localhost:9200/towns -d '{
+    "mappings" : {
+    	"town" : {
+		    "properties" : {
+                "townName" : {"type" : "string"},
+                "townNameSuggest" : {
+                    "type" : "completion",
+                    "payloads" : true
+                },
+                "postCode" : {"type" : "string"},
+				"location" : {"type" : "geo_point"}
+			}
+		}
+    }
+}'
