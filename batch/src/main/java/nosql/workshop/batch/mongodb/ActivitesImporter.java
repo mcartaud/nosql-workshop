@@ -1,5 +1,6 @@
 package nosql.workshop.batch.mongodb;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 
 import java.io.*;
@@ -32,9 +33,14 @@ public class ActivitesImporter {
 
         // Programmation défensive : certaines lignes n'ont pas d'activités de définies
         if (columns.length >= 6) {
+          //  BasicDBObject basicDBObject = new BasicDBObject().append("$set", new BasicDBObject().)
+
             String equipementId = columns[2].trim();
 
-            // TODO codez la mise à jour de l'installation pour rattacher les activités à ses équipements
+
         }
+
+//        new BasicDBObject().append("$set", new BasicDBObject().append("activites"))
+
     }
 }

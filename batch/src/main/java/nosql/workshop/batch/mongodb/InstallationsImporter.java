@@ -5,6 +5,8 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.util.Calendar;
 
 /**
  * Importe les 'installations' dans MongoDB.
@@ -35,7 +37,30 @@ public class InstallationsImporter {
                 .substring(1, line.length() - 1)
                 .split("\",\"");
 
-        // TODO créez le document à partir de la ligne CSV
-        return new BasicDBObject();
+        final Calendar calendar = Calendar.getInstance();
+        if (columns.length == 29) {
+            String val = columns[28].split(" ")[0].trim();
+            LocalDate localDate = LocalDate.parse(val);
+            calendar.set(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth());
+        }
+
+        BasicDBObject basicDBObject = new BasicDBObject()
+                .append("_id", columns[1].trim())
+                .append("nom", columns[0].trim())
+                .append("adresse", new BasicDBObject()
+                        .append("numero", columns[6].trim())
+                        .append("voie", columns[7].trim())
+                        .append("lieuDit", columns[5].trim())
+                        .append("codePostal", columns[4].trim())
+                        .append("commune", columns[2].trim()))
+                .append("location", new BasicDBObject()
+                        .append("type", "Point")
+                        .append("coordinates", columns[8].trim()))
+                .append("multiCommune", columns[16].trim())
+                .append("nbPlacesParking", columns[17].trim())
+                .append("nbPlacesParkingHandicapes", columns[18].trim())
+                .append("dateMiseAJourFiche", calendar.getTime());
+
+        return basicDBObject;
     }
 }
