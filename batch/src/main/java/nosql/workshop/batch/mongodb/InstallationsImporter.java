@@ -55,8 +55,8 @@ public class InstallationsImporter {
                         .append("commune", columns[2].trim()))
                 .append("location", new BasicDBObject()
                         .append("type", "Point")
-                        .append("coordinates", columns[8].trim()))
-                .append("multiCommune", columns[16].trim())
+                        .append("coordinates", new Double[]{Double.parseDouble(columns[9]), Double.parseDouble(columns[10])}))
+                .append("multiCommune", (columns[16].trim().equals("oui") ? 0 : 1))
                 .append("nbPlacesParking", columns[17].trim())
                 .append("nbPlacesParkingHandicapes", columns[18].trim())
                 .append("dateMiseAJourFiche", calendar.getTime());
