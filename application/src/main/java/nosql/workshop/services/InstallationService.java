@@ -9,9 +9,11 @@ import nosql.workshop.model.Installation;
 import nosql.workshop.model.stats.CountByActivity;
 import org.bson.types.ObjectId;
 import org.jongo.MongoCollection;
+import org.jongo.MongoCursor;
 import org.jongo.Oid;
 
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -50,8 +52,13 @@ public class InstallationService {
      * @return la liste des installations.
      */
     public List<Installation> list(int page, int pageSize) {
-        // TODO codez le service
-        throw new UnsupportedOperationException();
+        List<Installation> installationList = new ArrayList<>();
+
+        MongoCursor<Installation> all = installations.find().skip(page * pageSize).as(Installation.class);
+        for (int i = 0; i < pageSize; i++) {
+            installationList.add(all.next());
+        }
+        return installationList;
     }
 
     /**
@@ -62,8 +69,8 @@ public class InstallationService {
     public Installation random() {
         long count = count();
         int random = new Random().nextInt((int) count);
-        // TODO codez le service
-        throw new UnsupportedOperationException();
+        MongoCursor<Installation> installation = installations.find().skip(random).as(Installation.class);
+        return  installation.next();
     }
 
     /**
