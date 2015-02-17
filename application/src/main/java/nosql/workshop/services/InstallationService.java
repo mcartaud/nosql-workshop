@@ -6,6 +6,7 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.QueryBuilder;
 import nosql.workshop.model.Installation;
+import nosql.workshop.model.stats.Average;
 import nosql.workshop.model.stats.CountByActivity;
 import org.bson.types.ObjectId;
 import org.jongo.MongoCollection;
@@ -88,8 +89,10 @@ public class InstallationService {
      * @return l'installation avec le plus d'équipements.
      */
     public Installation installationWithMaxEquipments() {
-        // TODO codez le service
-        throw new UnsupportedOperationException();
+        return installations.aggregate("{$project: {nbEquipements:{$size: '$equipements'}, nom: 1, equipements: 1}}")
+                .and("{$sort: {'nbEquipements' : -1}}")
+                .and("{$limit: 1}")
+                .as(Installation.class).get(0);
     }
 
     /**
@@ -98,15 +101,18 @@ public class InstallationService {
      * @return le nombre d'installations par activité.
      */
     public List<CountByActivity> countByActivity() {
-        return toList(installations.aggregate("{$unwind : \"$equipements\"}")
-                .and("{$unwind : \"$equipements.activites\"}")
-                .and("{$group : {_id : \"$equipements.activites\", number : {$sum : 1}}}]")
-                .as(CountByActivity.class));
+        return installations.aggregate("{$unwind : '$equipements'}")
+                .and("{$unwind : '$equipements.activites'}")
+                .and("{$group : {_id : '$equipements.activites', total : {$sum : 1}}}")
+                .and("{$project: {activite : '$_id', total : 1}}")
+                .as(CountByActivity.class);
     }
 
     public double averageEquipmentsPerInstallation() {
-        // TODO codez le service
-        throw new UnsupportedOperationException();
+        return installations.aggregate("{$unwind: '$equipements'}")
+                .and("{$group: {_id: '$_id', number: {$sum: 1 }} }")
+                .and("{$group: {_id: null, average: { $avg : '$number'} } }")
+                .as(Average.class).get(0).getAverage();
     }
 
     /**
