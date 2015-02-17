@@ -30,14 +30,14 @@ public class EquipementsImporter {
         String[] columns = line.split(",");
 
         BasicDBObject newDocument = new BasicDBObject()
-            .append("$set", new BasicDBObject()
+            .append("$push", new BasicDBObject()
                 .append("equipements", new BasicDBObject()
-                    .append("equipmentId", columns[4].trim())
+                    .append("numero", columns[4].trim())
                     .append("nom", columns[5].trim())
                     .append("type", columns[7].trim())
                     .append("famille", columns[9].trim())));
 
-        String installationId = columns[2];
+        String installationId = columns[2].trim();
 
         BasicDBObject searchQuery = new BasicDBObject().append("_id", installationId);
         installationsCollection.update(searchQuery, newDocument);

@@ -2,6 +2,7 @@ package nosql.workshop.batch.mongodb;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
+import com.mongodb.QueryBuilder;
 
 import java.io.*;
 
@@ -33,14 +34,19 @@ public class ActivitesImporter {
 
         // Programmation défensive : certaines lignes n'ont pas d'activités de définies
         if (columns.length >= 6) {
-          //  BasicDBObject basicDBObject = new BasicDBObject().append("$set", new BasicDBObject().)
 
             String equipementId = columns[2].trim();
 
+            QueryBuilder queryBuilder = new QueryBuilder();
+            queryBuilder.put("equipementId").equals(equipementId);
+
+            BasicDBObject newDocument = new BasicDBObject()
+                    .append("$push", new BasicDBObject()
+                            .append("equipements.$.activites", columns[5].trim()));
+
+            BasicDBObject searchQuery = new BasicDBObject().append("equipements.numero", equipementId);
+            installationsCollection.update(searchQuery, newDocument);
 
         }
-
-//        new BasicDBObject().append("$set", new BasicDBObject().append("activites"))
-
     }
 }
