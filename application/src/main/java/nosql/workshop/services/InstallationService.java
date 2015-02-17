@@ -122,8 +122,13 @@ public class InstallationService {
      * @return les résultats correspondant à la requête.
      */
     public List<Installation> search(String searchQuery) {
-        // TODO codez le service
-        throw new UnsupportedOperationException();
+        MongoCursor<Installation> res = installations.find("{ $text: { $search: # } }", searchQuery).as(Installation.class);
+
+        List<Installation> result = new ArrayList<>();
+        while( res.hasNext() ) {
+            result.add( res.next() );
+        }
+        return result;
     }
 
     /**
