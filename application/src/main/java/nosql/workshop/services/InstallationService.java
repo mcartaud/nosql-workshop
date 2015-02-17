@@ -98,8 +98,10 @@ public class InstallationService {
      * @return le nombre d'installations par activité.
      */
     public List<CountByActivity> countByActivity() {
-        // TODO codez le service
-        throw new UnsupportedOperationException();
+        return toList(installations.aggregate("{$unwind : \"$equipements\"}")
+                .and("{$unwind : \"$equipements.activites\"}")
+                .and("{$group : {_id : \"$equipements.activites\", number : {$sum : 1}}}]")
+                .as(CountByActivity.class));
     }
 
     public double averageEquipmentsPerInstallation() {
