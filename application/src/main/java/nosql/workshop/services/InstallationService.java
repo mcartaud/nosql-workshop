@@ -140,7 +140,11 @@ public class InstallationService {
      * @return les installations dans la zone géographique demandée.
      */
     public List<Installation> geosearch(double lat, double lng, double distance) {
-        // TODO codez le service
-        throw new UnsupportedOperationException();
+        List<Installation> installationList = new ArrayList<>();
+        MongoCursor<Installation> installationMongoCursor = installations.find("{location :{ $near :{ $geometry :{ type : 'Point',coordinates: [" + lng + ", " + lat + "]},$maxDistance: " + distance + "}}}").as(Installation.class);
+        for (Installation installation : installationMongoCursor) {
+            installationList.add(installation);
+        }
+        return installationList;
     }
 }
