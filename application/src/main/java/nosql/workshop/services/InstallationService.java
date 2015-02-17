@@ -1,9 +1,15 @@
 package nosql.workshop.services;
 
 import com.google.inject.Inject;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
+import com.mongodb.QueryBuilder;
 import nosql.workshop.model.Installation;
 import nosql.workshop.model.stats.CountByActivity;
+import org.bson.types.ObjectId;
 import org.jongo.MongoCollection;
+import org.jongo.Oid;
 
 import java.net.UnknownHostException;
 import java.util.List;
@@ -33,8 +39,7 @@ public class InstallationService {
      * @return l'installation correspondante, ou <code>null</code> si non trouvée.
      */
     public Installation get(String numero) {
-        // TODO codez le service
-        throw new UnsupportedOperationException();
+        return installations.findOne("{_id:#}", numero).as(Installation.class);
     }
 
     /**
