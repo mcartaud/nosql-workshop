@@ -6,6 +6,7 @@ import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.xcontent.XContentFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,6 +48,15 @@ public class ImportTowns {
         Double longitude = Double.valueOf(split[6]);
         Double latitude = Double.valueOf(split[7]);
 
-        // TODO ajoutez le code permettant d'insérer la ville
+        try {
+            bulkRequest.add(elasticSearchClient.prepareIndex("towns", "town")
+                    .setSource(XContentFactory.jsonBuilder()
+                            .startObject()
+                            .field("townName", townName)
+                            .field("location", new Double[]{longitude, latitude})
+                            .endObject()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
