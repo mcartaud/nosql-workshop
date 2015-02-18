@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  * Classe utilitaire pour les jobs ElasticSearch
  */
 public abstract class ElasticSearchBatchUtils {
-    public static final String ES_DEFAULT_HOST = "localhost";
+    public static final String ES_DEFAULT_HOST = "172.17.3.89";
     public static final int ES_DEFAULT_PORT = 9300;
 
     private ElasticSearchBatchUtils(){}
