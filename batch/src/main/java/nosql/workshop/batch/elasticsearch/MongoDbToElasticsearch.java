@@ -23,23 +23,13 @@ import static nosql.workshop.batch.elasticsearch.util.ElasticSearchBatchUtils.*;
  */
 public class MongoDbToElasticsearch {
 
-    private static String getIp() {
-        String ret = "localhost";
-        try {
-            ret = InetAddress.getLocalHost().getHostAddress().toString();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        return ret;
-    }
-
     public static void main(String[] args) throws UnknownHostException {
 
         MongoClient mongoClient = null;
 
         long startTime = System.currentTimeMillis();
-        try (Client elasticSearchClient = new TransportClient(ImmutableSettings.settingsBuilder().put("cluster.name", "le_petit_pedestre").build())
-                .addTransportAddress(new InetSocketTransportAddress(getIp(), ES_DEFAULT_PORT));){
+        try (Client elasticSearchClient = new TransportClient(ImmutableSettings.settingsBuilder().put("cluster.name", "elasticsearch").build())
+                .addTransportAddress(new InetSocketTransportAddress(ES_DEFAULT_HOST, ES_DEFAULT_PORT));){
             checkIndexExists("installations", elasticSearchClient);
 
             mongoClient = new MongoClient();

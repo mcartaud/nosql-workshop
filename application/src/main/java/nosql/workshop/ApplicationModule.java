@@ -22,11 +22,7 @@ public class ApplicationModule extends AbstractModule {
         bind(MongoDB.class);
         bind(InstallationService.class);
         bind(SearchService.class);
-        try {
-            bindConstant().annotatedWith(Names.named(ES_HOST)).to(InetAddress.getLocalHost().getHostAddress().toString());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+        bindConstant().annotatedWith(Names.named(ES_HOST)).to("localhost");
         bindConstant().annotatedWith(Names.named(ES_TRANSPORT_PORT)).to(9300);
     }
 }

@@ -1,17 +1,11 @@
 package nosql.workshop.services;
 
 import com.google.inject.Inject;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
-import com.mongodb.QueryBuilder;
 import nosql.workshop.model.Installation;
 import nosql.workshop.model.stats.Average;
 import nosql.workshop.model.stats.CountByActivity;
-import org.bson.types.ObjectId;
 import org.jongo.MongoCollection;
 import org.jongo.MongoCursor;
-import org.jongo.Oid;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;

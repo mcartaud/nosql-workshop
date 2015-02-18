@@ -23,21 +23,11 @@ import static nosql.workshop.batch.elasticsearch.util.ElasticSearchBatchUtils.de
  */
 public class ImportTowns {
 
-    private static String getIp() {
-        String ret = "localhost";
-        try {
-            ret = InetAddress.getLocalHost().getHostAddress().toString();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        return ret;
-    }
-
     public static void main(String[] args) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(ImportTowns.class.getResourceAsStream("/csv/towns_paysdeloire.csv")));
 
-             Client elasticSearchClient = new TransportClient(ImmutableSettings.settingsBuilder().put("cluster.name", "le_petit_pedestre").build())
-                     .addTransportAddress(new InetSocketTransportAddress(getIp(), 9300));) {
+             Client elasticSearchClient = new TransportClient(ImmutableSettings.settingsBuilder().put("cluster.name", "elasticsearch").build())
+                     .addTransportAddress(new InetSocketTransportAddress("localhost", 9300));) {
 
             checkIndexExists("towns", elasticSearchClient);
 

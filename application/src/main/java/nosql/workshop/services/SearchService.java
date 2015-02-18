@@ -38,7 +38,7 @@ public class SearchService {
 
     @Inject
     public SearchService(@Named(ES_HOST) String host, @Named(ES_TRANSPORT_PORT) int transportPort) {
-        elasticSearchClient = new TransportClient(ImmutableSettings.settingsBuilder().put("cluster.name", "le_petit_pedestre").build())
+        elasticSearchClient = new TransportClient(ImmutableSettings.settingsBuilder().put("cluster.name", "elasticsearch").build())
                 .addTransportAddress(new InetSocketTransportAddress(host, transportPort));
 
         objectMapper = new ObjectMapper();
