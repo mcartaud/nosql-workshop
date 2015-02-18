@@ -78,12 +78,48 @@ public class SearchService {
         }
     }
 
+    private TownSuggest mapToSuggest(SearchHit searchHit) {
+        try {
+            return objectMapper.readValue(searchHit.getSourceAsString(), TownSuggest.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<TownSuggest> suggestTownName(String townName){
-        // TODO codez le service
-        throw new UnsupportedOperationException();
+        List<TownSuggest> suggests = new ArrayList<>();
+
+        SearchResponse searchResponse = elasticSearchClient.prepareSearch(TOWNS_INDEX)
+                .setTypes(TOWN_TYPE)
+                .setQuery(QueryBuilders.wildcardQuery("townName", townName + '*'))
+                .execute()
+                .actionGet();
+        searchResponse.getHits().forEach((response) -> suggests.add(mapToSuggest(response)));
+
+        return suggests;
     }
 
     public Double[] getTownLocation(String townName) {
-        throw new UnsupportedOperationException();
+        SearchResponse searchResponse = elasticSearchClient.prepareSearch(TOWNS_INDEX)
+                .setTypes(TOWN_TYPE)
+                .addField("location")
+                .setQuery(QueryBuilders.matchQuery("townName", townName))
+                .execute()
+                .actionGet();
+        SearchHit[] searchHits = searchResponse.getHits().getHits();
+
+        Double[] ret = new Double[2];
+
+        if (searchHits.length != 0) {
+            List<Object> values = searchHits[0].field("location").values();
+
+            ret = new Double[values.size()];
+            for(int i =0; i<values.size();i++){
+                ret[i] = (Double) values.get(i);
+            }
+        }
+
+
+        return ret;
     }
 }
