@@ -57,12 +57,10 @@ public class SearchService {
                 .setFrom(0).setSize(60)
                 .execute()
                 .actionGet();
-        SearchHits searchHits = searchResponse.getHits();
 
         List<Installation> installations = new ArrayList<>();
-        for (SearchHit searchHit : searchHits) {
-            installations.add(mapToInstallation(searchHit));
-        }
+        searchResponse.getHits().forEach((searchHit) -> installations.add(mapToInstallation(searchHit)));
+
         return installations;
     }
 
