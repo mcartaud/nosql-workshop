@@ -6,13 +6,18 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import nosql.workshop.model.Installation;
 import nosql.workshop.model.suggest.TownSuggest;
+import org.apache.lucene.util.QueryBuilder;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,8 +52,19 @@ public class SearchService {
      * @return la listes de installations
      */
     public List<Installation> search(String searchQuery) {
-        // TODO codez le service
-        throw new UnsupportedOperationException();
+        SearchResponse searchResponse = elasticSearchClient.prepareSearch(INSTALLATIONS_INDEX)
+                .setTypes(INSTALLATION_TYPE)
+                .setQuery(QueryBuilders.queryString(searchQuery))
+                .setFrom(0).setSize(60)
+                .execute()
+                .actionGet();
+
+        List<Installation> installations = new ArrayList<>();
+        SearchHits searchHits = searchResponse.getHits();
+        for (SearchHit searchHit : searchHits) {
+            installations.add(mapToInstallation(searchHit));
+        }
+        return installations;
     }
 
     /**
