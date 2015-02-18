@@ -12,6 +12,8 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import static nosql.workshop.batch.elasticsearch.util.ElasticSearchBatchUtils.checkIndexExists;
 import static nosql.workshop.batch.elasticsearch.util.ElasticSearchBatchUtils.dealWithFailures;
@@ -20,11 +22,22 @@ import static nosql.workshop.batch.elasticsearch.util.ElasticSearchBatchUtils.de
  * Job d'import des rues de towns_paysdeloire.csv vers ElasticSearch (/towns/town)
  */
 public class ImportTowns {
+
+    private static String getIp() {
+        String ret = "localhost";
+        try {
+            ret = InetAddress.getLocalHost().getHostAddress().toString();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
     public static void main(String[] args) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(ImportTowns.class.getResourceAsStream("/csv/towns_paysdeloire.csv")));
 
              Client elasticSearchClient = new TransportClient(ImmutableSettings.settingsBuilder().put("cluster.name", "le_petit_pedestre").build())
-                     .addTransportAddress(new InetSocketTransportAddress("172.17.3.89", 9300));) {
+                     .addTransportAddress(new InetSocketTransportAddress(getIp(), 9300));) {
 
             checkIndexExists("towns", elasticSearchClient);
 

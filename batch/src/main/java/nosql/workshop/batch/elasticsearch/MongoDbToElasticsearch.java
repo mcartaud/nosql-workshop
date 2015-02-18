@@ -13,6 +13,7 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import static nosql.workshop.batch.elasticsearch.util.ElasticSearchBatchUtils.*;
@@ -22,13 +23,23 @@ import static nosql.workshop.batch.elasticsearch.util.ElasticSearchBatchUtils.*;
  */
 public class MongoDbToElasticsearch {
 
+    private static String getIp() {
+        String ret = "localhost";
+        try {
+            ret = InetAddress.getLocalHost().getHostAddress().toString();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
     public static void main(String[] args) throws UnknownHostException {
 
         MongoClient mongoClient = null;
 
         long startTime = System.currentTimeMillis();
         try (Client elasticSearchClient = new TransportClient(ImmutableSettings.settingsBuilder().put("cluster.name", "le_petit_pedestre").build())
-                .addTransportAddress(new InetSocketTransportAddress(ES_DEFAULT_HOST, ES_DEFAULT_PORT));){
+                .addTransportAddress(new InetSocketTransportAddress(getIp(), ES_DEFAULT_PORT));){
             checkIndexExists("installations", elasticSearchClient);
 
             mongoClient = new MongoClient();

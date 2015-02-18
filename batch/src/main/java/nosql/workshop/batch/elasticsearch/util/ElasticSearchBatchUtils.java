@@ -9,6 +9,8 @@ import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.client.Client;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,7 +22,6 @@ public abstract class ElasticSearchBatchUtils {
     public static final int ES_DEFAULT_PORT = 9300;
 
     private ElasticSearchBatchUtils(){}
-
 
     public static DBCursor getMongoCursorToAllInstallations(MongoClient mongoClient) {
         DB db = mongoClient.getDB("nosql-workshop");

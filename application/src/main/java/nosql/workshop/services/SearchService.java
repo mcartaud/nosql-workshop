@@ -57,9 +57,9 @@ public class SearchService {
                 .setFrom(0).setSize(60)
                 .execute()
                 .actionGet();
+        SearchHits searchHits = searchResponse.getHits();
 
         List<Installation> installations = new ArrayList<>();
-        SearchHits searchHits = searchResponse.getHits();
         for (SearchHit searchHit : searchHits) {
             installations.add(mapToInstallation(searchHit));
         }
@@ -86,7 +86,6 @@ public class SearchService {
     }
 
     public Double[] getTownLocation(String townName) {
-        // TODO codez le service
         throw new UnsupportedOperationException();
     }
 }
